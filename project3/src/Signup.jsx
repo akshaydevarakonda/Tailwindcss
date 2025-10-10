@@ -19,6 +19,8 @@ const Signup = () => {
         confirmPassword: ""
 
     })
+    const [isLoading,setisLoading]=useState(false);
+    const [isModalopen,setisopenModal]=useState(false);
     const [showpassword, setshowpassword] = useState(false);
     const [showconfirmpassword, setshowconfirmpassword] = useState(false);
     const [error, seterror] = useState('')
@@ -31,6 +33,7 @@ const Signup = () => {
 
     })
     const handleSubmit = (event) => {
+        setisLoading(true);
         event.preventDefault();
         let newErrors={}
         if(!formData.fullName){
@@ -52,7 +55,9 @@ const Signup = () => {
         if(Object.keys(newErrors).length>0)
         {
             seterrors(newErrors)
+            setisLoading(false)
         }else{
+            setTimeout(()=>{
              setsuccess("your account created successfully")
             seterror("")
             seterror("")
@@ -61,7 +66,11 @@ const Signup = () => {
                 email: "",
                 password: "",
                 confirmPassword: ""})
-        }
+                setisopenModal(true);
+                setisLoading(false);
+        
+        },3000);
+    }
         // if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
         //     seterror("please fill all the fields")
         // } else if (formData.password !== formData.confirmPassword) {
@@ -175,12 +184,24 @@ const Signup = () => {
                 {error && <p className="text-red-500">{error}</p>}
                 {success && <p className="text-green-500">{success}</p>}
 
-                <button type="submit" className="bg-purple-500 w-[90%] py-4 rounded-2xl text-white font-semibold gap-3 flex items-center justify-center cursor-pointer "> <CircleUser /><p>Create Account</p></button>
+                <button type="submit" className="bg-purple-500 w-[90%] py-4 rounded-2xl text-white font-semibold gap-3 flex items-center justify-center cursor-pointer "> <CircleUser /><p>{isLoading?"Creating...":"Create Account"}</p></button>
                 <div className="border-1 border-gray-400 w-[90%] mt-4"></div>
                 <p className="text-gray-700 font-semibold">Already have an account?<Link to="/signin" className="text-purple-500">Sign In here</Link></p>
                 <button className="text-gray-700 font-semibold hover:bg-gray-200 py-4 w-[90%] rounded-xl cursor-pointer flex items-center justify-center">  <ChevronLeft /><p>Back to Home </p></button>
 
             </form>
+           {isModalopen && 
+           <div className="fixed h-dvh w-dvw flex justify-center items-center-safe">
+            <div className="absolute h-dvh w-dvw bg-black opacity-50"></div>
+                <div className=" p-6 border-1 border-gray-500 rounded-xl bg-white z-10">
+                    <p className="text-xl font-bold">Hello Akshay, Welcome to Devastra</p>
+                    <p className="mb-4">Your account created successfully,you can now login </p>
+                 <div >
+                       <Link to="/signin" className="px-5 py-3 bg-blue-600 rounded-2xl">sign in </Link>
+                       <button onClick={()=>setisopenModal(false)} className="px-4 py-2 rounded-2xl bg-gray-200">close</button>
+                 </div>
+                </div>
+            </div>}
         </div>
     )
 }
